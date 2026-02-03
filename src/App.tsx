@@ -1,9 +1,7 @@
+import { Routes } from "react-router";
+
 function App() {
-  return (
-    <div className="px-3">
-      <h1>Hello word</h1>
-    </div>
-  );
+  return <Routes></Routes>;
 }
 
 export default App;
