@@ -9,7 +9,7 @@ type DeleteRoleButtonProps = {
 };
 
 export default function DeleteRoleButton({ roleName }: DeleteRoleButtonProps) {
-  const { mutateAsync } = useDeleteRole();
+  const { mutateAsync, isPending } = useDeleteRole();
   const queryClient = useQueryClient();
 
   async function handleDelete() {
@@ -22,5 +22,5 @@ export default function DeleteRoleButton({ roleName }: DeleteRoleButtonProps) {
       position: "top-center",
     });
   }
-  return <ConfirmDeleteModal onConfirm={handleDelete} />;
+  return <ConfirmDeleteModal isRemoving={isPending} onConfirm={handleDelete} />;
 }

@@ -10,15 +10,18 @@ import {
   DialogTrigger,
 } from "@/shared/components/ui/dialog";
 import { Trash2 } from "lucide-react";
+import LoadingButton from "./LoagingButton";
 
 interface ConfirmDeleteModalProps {
   onConfirm: () => void;
   itemName?: string; // Nom de l'élément à supprimer (optionnel)
+  isRemoving: boolean;
 }
 
 export function ConfirmDeleteModal({
   onConfirm,
   itemName,
+  isRemoving,
 }: ConfirmDeleteModalProps) {
   return (
     <Dialog>
@@ -40,14 +43,15 @@ export function ConfirmDeleteModal({
           <DialogClose asChild>
             <Button variant="outline">Annuler</Button>
           </DialogClose>
-          <Button
+          <LoadingButton
+            isLoading={isRemoving}
             variant="destructive"
             onClick={() => {
               onConfirm();
             }}
           >
             Supprimer
-          </Button>
+          </LoadingButton>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -1,8 +1,8 @@
 import { Spinner } from "@/shared/components/ui/spinner";
 import { useRoles } from "../hooks/queries/useRoles";
 import { TableCell, TableRow } from "@/shared/components/ui/table";
-import { EditRoleModal } from "./EditRoleModal";
 import DeleteRoleButton from "./DeleteRoleButton";
+import { RoleModal } from "./RoleModal";
 
 export default function RoleList() {
   const { data: roles, isLoading, error } = useRoles();
@@ -26,7 +26,7 @@ export default function RoleList() {
           <TableCell>{role.description}</TableCell>
           <TableCell className="text-right">
             <div className="flex justify-end gap-3">
-              <EditRoleModal role={role} />
+              <RoleModal role={role} isEdit={true} />
               <DeleteRoleButton roleName={role.name} />
             </div>
           </TableCell>

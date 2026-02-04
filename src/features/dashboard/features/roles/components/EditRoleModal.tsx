@@ -10,15 +10,17 @@ import {
 } from "@/shared/components/ui/dialog";
 import { Pencil } from "lucide-react";
 import { RoleForm } from "./RoleForm";
-import type { Roles } from "../types/roleTypes";
+import type { Role } from "../types/roleTypes";
+import { useState } from "react";
 
 type EditRoleModalProps = {
-  role: Roles;
+  role: Role;
 };
 
 export function EditRoleModal({ role }: EditRoleModalProps) {
+  const [isOpen, setIsOpen] = useState(false);
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <form>
         <DialogTrigger asChild>
           <Button variant="secondary" size="icon">
@@ -30,7 +32,11 @@ export function EditRoleModal({ role }: EditRoleModalProps) {
             <DialogTitle>Modifier le role</DialogTitle>
             <DialogDescription />
           </DialogHeader>
-          <RoleForm isEdit={true} role={role} />
+          <RoleForm
+            onClose={() => setIsOpen(false)}
+            isEdit={true}
+            role={role}
+          />
           <DialogFooter />
         </DialogContent>
       </form>

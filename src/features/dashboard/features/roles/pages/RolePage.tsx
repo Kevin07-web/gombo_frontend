@@ -6,10 +6,10 @@ import {
   TableRow,
   TableCaption,
 } from "@/shared/components/ui/table";
-import { AddRoleModal } from "../components/AddRoleModal";
 import RoleList from "../components/RoleList";
 import { Button } from "@/shared/components/ui/button";
 import { RefreshCcw } from "lucide-react";
+import { RoleModal } from "../components/RoleModal";
 
 export default function RolePage() {
   return (
@@ -18,7 +18,7 @@ export default function RolePage() {
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold">Liste des rôles</h2>
           <div className="flex gap-2">
-            <AddRoleModal />
+            <RoleModal />
             <Button variant="outline">
               <RefreshCcw />
               Refresh

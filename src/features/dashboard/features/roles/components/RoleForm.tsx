@@ -19,11 +19,12 @@ import type { RoleFormValues, Role } from "../types/roleTypes";
 import { useAddRole } from "../hooks/mutations/useAddRole";
 import { useEditRole } from "../hooks/mutations/useEditRole";
 import { useQueryClient } from "@tanstack/react-query";
+import LoadingButton from "@/shared/components/LoagingButton";
 
 type RoleFormProps = {
   isEdit?: boolean;
   role?: Role;
-  onClose: () => void;
+  onClose?: () => void;
 };
 
 export function RoleForm({ isEdit = false, role, onClose }: RoleFormProps) {
@@ -35,28 +36,35 @@ export function RoleForm({ isEdit = false, role, onClose }: RoleFormProps) {
     },
   });
   const queryClient = useQueryClient();
-  const { mutateAsync } = useAddRole();
-  const { mutateAsync: updateRole } = useEditRole();
+  const { mutateAsync, isPaused: isCreating } = useAddRole();
+  const { mutateAsync: updateRole, isPending: isUpdating } = useEditRole();
+  const isLoading = isCreating || isUpdating;
   async function onSubmit(data: RoleFormValues) {
+    let newRole: Role;
+
     if (isEdit && role) {
-      const newRole = { ...role, ...data };
+      newRole = { ...role, ...data };
       await updateRole(newRole);
       queryClient.setQueryData<Role[]>(["roles"], (oldRoles) =>
         oldRoles?.map((r) => (r.id === newRole.id ? newRole : r)),
       );
-      toast.success("Rôle mis à jour avec succès", { position: "top-center" });
-      form.reset({ name: newRole.name, description: newRole.description });
-      return;
-    }
 
-    const newRole = await mutateAsync(data);
-    queryClient.setQueryData<Role[]>(["roles"], (oldRoles) => [
-      ...(oldRoles || []),
-      newRole,
-    ]);
-    onClose();
-    toast.success("Rôle créé avec succès", { position: "top-center" });
-    form.reset();
+      toast.success("Rôle mis à jour avec succès", { position: "top-center" });
+      form.reset({
+        name: newRole.name,
+        description: newRole.description || "",
+      });
+    } else {
+      newRole = await mutateAsync(data);
+      queryClient.setQueryData<Role[]>(["roles"], (oldRoles) => [
+        ...(oldRoles || []),
+        newRole,
+      ]);
+
+      toast.success("Rôle créé avec succès", { position: "top-center" });
+      form.reset();
+    }
+    onClose?.();
   }
 
   return (
@@ -104,9 +112,9 @@ export function RoleForm({ isEdit = false, role, onClose }: RoleFormProps) {
         <Button type="button" variant="outline" onClick={() => form.reset()}>
           Effacer
         </Button>
-        <Button type="submit" form="form-rhf-demo">
+        <LoadingButton isLoading={isLoading} type="submit" form="form-rhf-demo">
           {isEdit ? "Modifier" : "Créer"}
-        </Button>
+        </LoadingButton>
       </Field>
     </form>
   );
