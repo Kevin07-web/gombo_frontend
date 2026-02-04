@@ -1,13 +1,13 @@
 import { Spinner } from "@/shared/components/ui/spinner";
 import { TableCell, TableRow } from "@/shared/components/ui/table";
-import { useServices } from "../hooks/queries/useServices";
-import { ServiceModal } from "./ServiceModal";
-import DeleteServiceButton from "./DeleteServiceButton";
+import { useRegions } from "../hooks/queries/useRegions";
+import { RegionModal } from "./RegionModal";
+import DeleteRegionButton from "./DeleteRegionButton";
 import { Button } from "@/shared/components/ui/button";
 import { Eye } from "lucide-react";
 
-export default function ServiceList() {
-  const { data: services, isLoading, error } = useServices();
+export default function RegionList() {
+  const { data: regions, isLoading, error } = useRegions();
 
   if (isLoading)
     return (
@@ -18,22 +18,22 @@ export default function ServiceList() {
       </TableRow>
     );
   if (error) return <p>Erreur chargement</p>;
+
   return (
     <>
-      {services?.map((s) => (
-        <TableRow key={s.id} className="font-heading">
-          <TableCell className="font-medium">{s.id}</TableCell>
-          <TableCell>{s.libelle}</TableCell>
-          <TableCell>{s.description}</TableCell>
-          <TableCell>{s.statut || "Inconnu"}</TableCell>
-          <TableCell>{s.categorieLibelle || "Inconnu"}</TableCell>
+      {regions?.map((r) => (
+        <TableRow key={r.id} className="font-heading">
+          <TableCell className="font-medium">{r.id}</TableCell>
+          <TableCell>{r.libelle}</TableCell>
+          <TableCell>{r.longitude || "Inconnu"}</TableCell>
+          <TableCell>{r.latitude || "Inconnu"}</TableCell>
           <TableCell className="text-right">
             <div className="flex justify-end gap-3">
               <Button variant="gray">
                 <Eye size={16} />
               </Button>
-              <ServiceModal service={s} isEdit={true} />
-              <DeleteServiceButton serviceId={s.id} />
+              <RegionModal region={r} isEdit={true} />
+              <DeleteRegionButton regionId={r.id} />
             </div>
           </TableCell>
         </TableRow>
