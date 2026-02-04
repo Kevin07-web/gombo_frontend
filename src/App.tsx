@@ -4,6 +4,7 @@ import RolePage from "./features/dashboard/features/roles/pages/RolePage";
 import CategoryPage from "./features/dashboard/features/categories/pages/CategoryPage";
 import ServicePage from "./features/dashboard/features/services/pages/ServicePage";
 import RegionPage from "./features/dashboard/features/regions/pages/RegionPage";
+import ProvincePage from "./features/dashboard/features/provinces/pages/ProvincePage";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="Reclamations" element={<h1>Reclamations</h1>} />
         <Route path="services" element={<ServicePage />} />
         <Route path="regions" element={<RegionPage />} />
+        <Route path="provinces" element={<ProvincePage />} />
       </Route>
     </Routes>
   );

@@ -9,55 +9,70 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/shared/components/ui/field";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/shared/components/ui/select";
 import { Input } from "@/shared/components/ui/input";
 import { useQueryClient } from "@tanstack/react-query";
 import LoadingButton from "@/shared/components/LoagingButton";
-import type { Region, regionFormValues } from "../types/regionType";
-import { regionSchemas } from "../schemas/regionSchemas";
-import { useAddRegion } from "../hooks/queries/useAddRegion";
-import { useEditRegion } from "../hooks/queries/useEditRegion";
+import type { Province, ProvinceFormValues } from "../types/ProvinceType";
+import { provinceSchemas } from "../schemas/ProvinceSchemas";
+import { useAddProvince } from "../hooks/mutations/useAddProvince";
+import { useEditProvince } from "../hooks/mutations/useEditProvince";
+import { useRegions } from "../../regions/hooks/queries/useRegions";
 
-type RegionFormProps = {
+type ProvinceFormProps = {
   isEdit?: boolean;
-  region?: Region;
+  province?: Province;
   onClose?: () => void;
 };
 
-export function RegionForm({
+export function ProvinceForm({
   isEdit = false,
-  region,
+  province,
   onClose,
-}: RegionFormProps) {
-  const form = useForm<regionFormValues>({
-    resolver: zodResolver(regionSchemas),
+}: ProvinceFormProps) {
+  const form = useForm<ProvinceFormValues>({
+    resolver: zodResolver(provinceSchemas),
     defaultValues: {
-      libelle: region?.libelle ?? "",
-      longitude: region?.longitude?.toString() ?? "",
-      latitude: region?.latitude?.toString() ?? "",
+      libelle: province?.libelle ?? "",
+      longitude: province?.longitude?.toString() ?? "",
+      latitude: province?.latitude?.toString() ?? "",
+      regionId: province?.regionId ?? "",
     },
   });
   const queryClient = useQueryClient();
-  const { mutateAsync, isPaused: isCreating } = useAddRegion();
-  const { mutateAsync: updateRole, isPending: isUpdating } = useEditRegion();
+  const { mutateAsync, isPaused: isCreating } = useAddProvince();
+  const { mutateAsync: updateProvince, isPending: isUpdating } =
+    useEditProvince();
   const isLoading = isCreating || isUpdating;
+  const { data: regions } = useRegions();
 
-  async function onSubmit(data: regionFormValues) {
-    let newRegion: Region;
-    if (isEdit && region) {
-      newRegion = { ...region, ...data };
-      await updateRole({ regionId: region.id, data: newRegion });
-      queryClient.setQueryData<Region[]>(["regions"], (oldRegions) =>
-        oldRegions?.map((r) => (r.id === newRegion.id ? newRegion : r)),
+  async function onSubmit(data: ProvinceFormValues) {
+    let newProvince: Province;
+    if (isEdit && province) {
+      newProvince = { ...province, ...data };
+      await updateProvince({
+        provinceId: province.id,
+        data: newProvince,
+      });
+      queryClient.setQueryData<Province[]>(["provinces"], (oldProvinces) =>
+        oldProvinces?.map((r) => (r.id === newProvince.id ? newProvince : r)),
       );
 
       toast.success("Region mis à jour avec succès", {
         position: "top-center",
       });
     } else {
-      newRegion = await mutateAsync(data);
-      queryClient.setQueryData<Region[]>(["regions"], (oldRegions) => [
-        ...(oldRegions || []),
-        newRegion,
+      newProvince = await mutateAsync(data);
+      queryClient.setQueryData<Province[]>(["provinces"], (oldProvinces) => [
+        ...(oldProvinces || []),
+        newProvince,
       ]);
 
       toast.success("Region créé avec succès", { position: "top-center" });
@@ -113,6 +128,33 @@ export function RegionForm({
                 aria-invalid={fieldState.invalid}
                 autoComplete="off"
               />
+            </Field>
+          )}
+        />
+        <Controller
+          name="regionId"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel>Région</FieldLabel>
+
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger aria-invalid={fieldState.invalid}>
+                  <SelectValue placeholder="Sélectionner une région" />
+                </SelectTrigger>
+
+                <SelectContent>
+                  <SelectGroup>
+                    {regions?.map((r) => (
+                      <SelectItem key={r.id} value={r.id}>
+                        {r.libelle}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
