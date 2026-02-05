@@ -1,7 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import { Button } from "@/shared/components/ui/button";
 import {
   Field,
   FieldError,
@@ -14,12 +13,20 @@ import {
   InputGroupTextarea,
 } from "@/shared/components/ui/input-group";
 import { useQueryClient } from "@tanstack/react-query";
-import LoadingButton from "@/shared/components/LoagingButton";
 import { CtgSchemas } from "../schemas/CategorySchemas";
 import type { Category, CtgFormValues } from "../types/CategoryTypes";
 import { useAddCategory } from "../hooks/mutations/useAddCategory";
 import { useEditCategory } from "../hooks/mutations/useEditCategory";
 import { toast } from "sonner";
+import LoadingButton from "@/shared/components/LoagingButton";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/shared/components/ui/select";
 
 type RoleFormProps = {
   isEdit?: boolean;
@@ -33,18 +40,21 @@ export function CategoryForm({ isEdit = false, ctg, onClose }: RoleFormProps) {
     defaultValues: {
       libelle: isEdit && ctg?.libelle ? ctg.libelle : "",
       description: isEdit && ctg?.description ? ctg.description : "",
-      status: isEdit && ctg?.status ? ctg.status : "",
+      statut: isEdit && ctg?.statut ? ctg.statut : "INACTIF",
     },
   });
+  const {
+    reset,
+    formState: { isValid, isDirty },
+  } = form;
   const queryClient = useQueryClient();
-  const { mutateAsync, isPaused: isCreating } = useAddCategory();
+  const { mutateAsync, isPending: isCreating } = useAddCategory();
   const { mutateAsync: updateCategory, isPending: isUpdating } =
     useEditCategory();
   const isLoading = isCreating || isUpdating;
 
   async function onSubmit(data: CtgFormValues) {
     let newCtg: Category;
-
     if (isEdit && ctg) {
       newCtg = { ...ctg, ...data };
       await updateCategory({ ctgId: ctg.id, data: newCtg });
@@ -63,7 +73,7 @@ export function CategoryForm({ isEdit = false, ctg, onClose }: RoleFormProps) {
       ]);
 
       toast.success("Categorie créé avec succès", { position: "top-center" });
-      form.reset();
+      reset();
     }
     onClose?.();
   }
@@ -108,28 +118,40 @@ export function CategoryForm({ isEdit = false, ctg, onClose }: RoleFormProps) {
             </Field>
           )}
         />
+
         <Controller
-          name="status"
+          name="statut"
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="form-rhf-demo-title">Status</FieldLabel>
-              <Input
-                {...field}
-                id="form-rhf-demo-title"
-                aria-invalid={fieldState.invalid}
-                autoComplete="off"
-              />
+              <FieldLabel>Statut</FieldLabel>
+
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger aria-invalid={fieldState.invalid}>
+                  <SelectValue placeholder="Sélectionner une catégorie" />
+                </SelectTrigger>
+
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="ACTIF">Actif</SelectItem>
+                    <SelectItem value="INACTIF">Inactif</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
       </FieldGroup>
       <Field orientation="horizontal" className="justify-end mt-3">
-        <Button type="button" variant="outline" onClick={() => form.reset()}>
-          Effacer
-        </Button>
-        <LoadingButton isLoading={isLoading} type="submit" form="form-rhf-demo">
+        <LoadingButton
+          isLoading={isLoading}
+          disabled={!isValid || !isDirty}
+          type="submit"
+          form="form-rhf-demo"
+          size="full"
+        >
           {isEdit ? "Modifier" : "Créer"}
         </LoadingButton>
       </Field>

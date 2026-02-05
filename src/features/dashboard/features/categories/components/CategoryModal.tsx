@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Button } from "@/shared/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -9,9 +8,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/shared/components/ui/dialog";
-import { Plus, Pencil } from "lucide-react";
 import type { Category } from "../types/CategoryTypes";
 import { CategoryForm } from "./CategoryForm";
+import { ModalDefaultTrigger } from "@/features/dashboard/components/ModalDefaultTrigger";
 
 type RoleModalProps = {
   isEdit?: boolean;
@@ -25,41 +24,25 @@ export function CategoryModal({
   trigger,
 }: RoleModalProps) {
   const [isOpen, setIsOpen] = useState(false);
-
-  // Bouton par défaut selon le type de modal
-  const defaultTrigger = isEdit ? (
-    <Button variant="secondary" size="icon">
-      <Pencil size={16} />
-    </Button>
-  ) : (
-    <Button>
-      <Plus size={16} />
-      Ajouter
-    </Button>
-  );
-
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>{trigger || defaultTrigger}</DialogTrigger>
-
-      <DialogContent className="sm:max-w-sm">
+      <DialogTrigger asChild>
+        {trigger || <ModalDefaultTrigger isEdit={isEdit} />}
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-sm pt-10">
         <DialogHeader>
-          <DialogTitle>
-            {isEdit ? "Modifier une categorie" : "Créer une categorie"}
+          <DialogTitle className="text-2xl text-center">
+            {isEdit ? "Modifier une categorie" : "Créer un Categorie"}
           </DialogTitle>
-          <DialogDescription>
-            {isEdit
-              ? "Modifiez les informations de la categorie ci-dessous."
-              : "Remplissez le formulaire ci-dessous pour créer une categorie."}
-          </DialogDescription>
+          <DialogDescription />
         </DialogHeader>
-
-        <CategoryForm
-          onClose={() => setIsOpen(false)}
-          isEdit={isEdit}
-          ctg={ctg}
-        />
-
+        <div className="px-3">
+          <CategoryForm
+            onClose={() => setIsOpen(false)}
+            isEdit={isEdit}
+            ctg={ctg}
+          />
+        </div>
         <DialogFooter />
       </DialogContent>
     </Dialog>

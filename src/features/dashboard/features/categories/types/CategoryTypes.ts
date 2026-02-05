@@ -6,5 +6,11 @@ export type Category = {
   id: string;
   libelle: string;
   description: string | null;
-  status: string | null;
+  statut: "ACTIF" | "INACTIF";
+  createdAt: string;
+  updateAt: string;
+  createdById: string;
+  updateById: string;
+  currentUserfullName: string;
+  currentUserEmail: string;
 };

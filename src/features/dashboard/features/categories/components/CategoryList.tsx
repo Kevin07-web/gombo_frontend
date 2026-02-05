@@ -4,30 +4,56 @@ import { useCategories } from "../hooks/queries/useCategories";
 import { CategoryModal } from "./CategoryModal";
 import DeleteCategoryButton from "./DeleteCategoryButton";
 import { CategoryDetailModal } from "./CategoryDetailModal";
+import { TableLoading } from "@/features/dashboard/components/TableLoading";
+import { TableError } from "@/features/dashboard/components/TableError";
+import { truncate } from "@/shared/utils/tuncate";
+import { StatusBadge } from "@/features/dashboard/components/StatusBadge";
 
 export default function CategoryList() {
-  const { data: categories, isLoading, error } = useCategories();
+  const { data: categories, isLoading, isFetching, error } = useCategories();
 
-  if (isLoading)
+  if (isLoading) {
+    return <TableLoading />;
+  }
+  if (error) {
     return (
-      <TableRow>
-        <TableCell colSpan={4}>
-          <Spinner className="size-10 relative left-1/2 -translate-x-1/2" />
-        </TableCell>
-      </TableRow>
+      <TableError
+        description="Impossible de charger les categories pour le moment."
+        buttonLabel="Réessayer"
+        onButtonClick={() => window.location.reload()}
+      />
     );
-  if (error) return <p>Erreur chargement</p>;
+  }
 
   return (
     <>
+      {isFetching && !isLoading && (
+        <TableRow className="absolute pointer-events-none inset-0 flex justify-center items-center">
+          <TableCell colSpan={4} className="py-2 text-center">
+            <Spinner className="size-12 mx-auto" />
+          </TableCell>
+        </TableRow>
+      )}
       {categories?.map((ctg) => (
-        <TableRow key={ctg.id}>
-          <TableCell className="font-medium">{ctg.id}</TableCell>
-          <TableCell>{ctg.libelle}</TableCell>
-          <TableCell>{ctg.description}</TableCell>
-          <TableCell>{ctg.status || "Inconnu"}</TableCell>
+        <TableRow
+          key={ctg.id}
+          className={`transition ${isFetching && "opacity-60 pointer-events-none"}`}
+        >
+          <TableCell>
+            <span className="font-medium">#</span> {truncate(ctg.id)}
+          </TableCell>
+
+          <TableCell className="font-semibold">{ctg.libelle}</TableCell>
+
+          <TableCell className="text-muted-foreground">
+            {ctg.description ? truncate(ctg.description, 10) : ""}
+          </TableCell>
+          <TableCell>
+            <StatusBadge status={ctg.statut} />
+          </TableCell>
+
           <TableCell className="text-right">
-            <div className="flex justify-end gap-3">
+            <div className="flex justify-end gap-2">
               <CategoryDetailModal ctg={ctg} />
               <CategoryModal ctg={ctg} isEdit={true} />
               <DeleteCategoryButton ctgId={ctg.id} />

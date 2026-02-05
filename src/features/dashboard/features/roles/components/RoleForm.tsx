@@ -18,7 +18,7 @@ import type { RoleFormValues, Role } from "../types/roleTypes";
 import { useAddRole } from "../hooks/mutations/useAddRole";
 import { useEditRole } from "../hooks/mutations/useEditRole";
 import { useQueryClient } from "@tanstack/react-query";
-import FormActionButtons from "@/features/dashboard/components/FormActionButtons";
+import LoadingButton from "@/shared/components/LoagingButton";
 
 type RoleFormProps = {
   isEdit?: boolean;
@@ -39,7 +39,7 @@ export function RoleForm({ isEdit = false, role, onClose }: RoleFormProps) {
     formState: { isValid, isDirty },
   } = form;
   const queryClient = useQueryClient();
-  const { mutateAsync, isPaused: isCreating } = useAddRole();
+  const { mutateAsync, isPending: isCreating } = useAddRole();
   const { mutateAsync: updateRole, isPending: isUpdating } = useEditRole();
   const isLoading = isCreating || isUpdating;
   async function onSubmit(data: RoleFormValues) {
@@ -112,13 +112,15 @@ export function RoleForm({ isEdit = false, role, onClose }: RoleFormProps) {
         />
       </FieldGroup>
       <Field orientation="horizontal" className="justify-end mt-3">
-        <FormActionButtons
-          isEdit={isEdit}
-          isValid={isValid}
-          isDirty={isDirty}
+        <LoadingButton
           isLoading={isLoading}
-          reset={reset}
-        />
+          disabled={!isValid || !isDirty}
+          type="submit"
+          form="form-rhf-demo"
+          size="full"
+        >
+          {isEdit ? "Modifier" : "Créer"}
+        </LoadingButton>
       </Field>
     </form>
   );

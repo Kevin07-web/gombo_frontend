@@ -28,10 +28,8 @@ export function RoleModal({ isEdit = false, role, trigger }: RoleModalProps) {
 
       <DialogContent className="sm:max-w-sm pt-10">
         <DialogHeader>
-          <DialogTitle>
-            <h3 className="text-2xl text-center">
-              {isEdit ? "Modifier le rôle" : "Créer un rôle"}
-            </h3>
+          <DialogTitle className="text-2xl text-center">
+            {isEdit ? "Modifier le rôle" : "Créer un rôle"}
           </DialogTitle>
           <DialogDescription />
         </DialogHeader>
