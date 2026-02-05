@@ -9,7 +9,6 @@ import {
   SidebarMenuItem,
 } from "@/shared/components/ui/sidebar";
 
-import Logo from "../../../../public/GOMBO_2026-removebg-preview.png";
 import { Link } from "react-router";
 import {
   Users,
@@ -97,26 +96,36 @@ const menuSections = [
 export default function DashboardSidebar() {
   return (
     <Sidebar>
-      <div className="pl-3">
-        <SidebarHeader>
-          <img src={Logo} className="w-full h-10 hidden object-cover" />
-          <h3 className="font-extrabold">Dashboard</h3>
+      <div className="pl-3 pr-2">
+        <SidebarHeader className="flex gap-2 py-4">
+          <h3 className="font-bold text-lg tracking-wide">Dashboard</h3>
         </SidebarHeader>
 
-        <SidebarContent>
+        <SidebarContent className="space-y-4">
           {menuSections.map((section) => (
             <SidebarGroup key={section.title}>
-              <p className="text-xs font-semibold text-gray-400 uppercase mb-2 px-2">
+              <p className="text-[11px] font-heading font-semibold text-muted-foreground uppercase mb-2 px-2 tracking-widest">
                 {section.title}
               </p>
 
-              <SidebarMenu>
+              <SidebarMenu className="space-y-1">
                 {section.items.map((item) => (
                   <SidebarMenuItem key={item.id}>
-                    <SidebarMenuButton asChild>
+                    <SidebarMenuButton
+                      asChild
+                      className="
+                        flex items-center gap-3
+                        rounded-lg px-3 py-2
+                        transition-all
+                        hover:translate-x-1
+                        hover:bg-sidebar-accent
+                        data-[active=true]:bg-sidebar-accent
+                        data-[active=true]:font-semibold
+                      "
+                    >
                       <Link to={`/dashboard${item.href}`}>
-                        {item.icon}
-                        <span>{item.title}</span>
+                        <span className="opacity-80">{item.icon}</span>
+                        <span className="text-sm">{item.title}</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -126,7 +135,9 @@ export default function DashboardSidebar() {
           ))}
         </SidebarContent>
 
-        <SidebarFooter />
+        <SidebarFooter className="text-xs text-muted-foreground px-3 py-2">
+          © 2026 Gombo
+        </SidebarFooter>
       </div>
     </Sidebar>
   );

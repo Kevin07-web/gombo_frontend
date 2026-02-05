@@ -4,33 +4,32 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  TableCaption,
 } from "@/shared/components/ui/table";
 import RoleList from "../components/RoleList";
-import { Button } from "@/shared/components/ui/button";
-import { RefreshCcw } from "lucide-react";
 import { RoleModal } from "../components/RoleModal";
+import RefreshButton from "@/features/dashboard/components/RefresButton";
 
 export default function RolePage() {
   return (
-    <div className="mx-auto max-w-5xl mt-10">
-      <div className="bg-white rounded-lg shadow p-4">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold">Liste des rôles</h2>
-          <div className="flex gap-2">
-            <RoleModal />
-            <Button variant="outline">
-              <RefreshCcw />
-              Refresh
-            </Button>
-          </div>
+    <div className="mx-auto max-w-5xl mt-10 space-y-4">
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">Rôles</h2>
         </div>
-        <Table>
-          <TableCaption>Rôles disponibles dans le système</TableCaption>
 
+        <div className="flex flex-wrap gap-2">
+          <RoleModal />
+          <RefreshButton queryKey={["roles"]} />
+        </div>
+      </div>
+
+      {/* Table Card */}
+      <div className="bg-white rounded-xl shadow-sm relative">
+        <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead className="w-15">#</TableHead>
+            <TableRow className="bg-muted/40">
+              <TableHead className="w-12">#</TableHead>
               <TableHead>Nom</TableHead>
               <TableHead>Description</TableHead>
               <TableHead className="text-right">Actions</TableHead>

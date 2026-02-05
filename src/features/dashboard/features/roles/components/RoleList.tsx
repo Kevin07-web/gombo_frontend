@@ -1,36 +1,66 @@
-import { Spinner } from "@/shared/components/ui/spinner";
 import { useRoles } from "../hooks/queries/useRoles";
 import { TableCell, TableRow } from "@/shared/components/ui/table";
 import DeleteRoleButton from "./DeleteRoleButton";
 import { RoleModal } from "./RoleModal";
-import { Button } from "@/shared/components/ui/button";
-import { Eye } from "lucide-react";
+import { TableError } from "@/features/dashboard/components/TableError";
+import { TableLoading } from "@/features/dashboard/components/TableLoading";
+import { truncate } from "@/shared/utils/tuncate";
+import { Spinner } from "@/shared/components/ui/spinner";
 
 export default function RoleList() {
-  const { data: roles, isLoading, error } = useRoles();
+  const { data: roles, isLoading, isFetching, error } = useRoles();
 
-  if (isLoading)
+  if (isLoading) {
+    return <TableLoading />;
+  }
+  if (error) {
+    return (
+      <TableError
+        description="Impossible de charger les rôles pour le moment."
+        buttonLabel="Réessayer"
+        onButtonClick={() => window.location.reload()}
+      />
+    );
+  }
+
+  if (!roles?.length) {
     return (
       <TableRow>
-        <TableCell colSpan={4}>
-          <Spinner className="size-10 relative left-1/2 -translate-x-1/2" />
+        <TableCell
+          colSpan={4}
+          className="text-center py-6 text-muted-foreground"
+        >
+          Aucun rôle disponible
         </TableCell>
       </TableRow>
     );
-  if (error) return <p>Erreur chargement</p>;
-
+  }
   return (
     <>
+      {isFetching && !isLoading && (
+        <TableRow className="absolute pointer-events-none inset-0 flex justify-center items-center">
+          <TableCell colSpan={4} className="py-2 text-center">
+            <Spinner className="size-12 mx-auto" />
+          </TableCell>
+        </TableRow>
+      )}
       {roles?.map((role) => (
-        <TableRow key={role.id}>
-          <TableCell className="font-medium">{role.id}</TableCell>
-          <TableCell>{role.name}</TableCell>
-          <TableCell>{role.description}</TableCell>
+        <TableRow
+          key={role.id}
+          className={`transition ${isFetching && "opacity-60 pointer-events-none"}`}
+        >
+          <TableCell>
+            <span className="font-medium">#</span> {truncate(role.id)}
+          </TableCell>
+
+          <TableCell className="font-semibold">{role.name}</TableCell>
+
+          <TableCell className="text-muted-foreground">
+            {role.description}
+          </TableCell>
+
           <TableCell className="text-right">
-            <div className="flex justify-end gap-3">
-              <Button variant="gray">
-                <Eye size={16} />
-              </Button>
+            <div className="flex justify-end gap-2">
               <RoleModal role={role} isEdit={true} />
               <DeleteRoleButton roleName={role.name} />
             </div>

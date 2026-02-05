@@ -2,7 +2,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Button } from "@/shared/components/ui/button";
 import {
   Field,
   FieldError,
@@ -19,7 +18,7 @@ import type { RoleFormValues, Role } from "../types/roleTypes";
 import { useAddRole } from "../hooks/mutations/useAddRole";
 import { useEditRole } from "../hooks/mutations/useEditRole";
 import { useQueryClient } from "@tanstack/react-query";
-import LoadingButton from "@/shared/components/LoagingButton";
+import FormActionButtons from "@/features/dashboard/components/FormActionButtons";
 
 type RoleFormProps = {
   isEdit?: boolean;
@@ -35,6 +34,10 @@ export function RoleForm({ isEdit = false, role, onClose }: RoleFormProps) {
       description: isEdit && role?.description ? role.description : "",
     },
   });
+  const {
+    reset,
+    formState: { isValid, isDirty },
+  } = form;
   const queryClient = useQueryClient();
   const { mutateAsync, isPaused: isCreating } = useAddRole();
   const { mutateAsync: updateRole, isPending: isUpdating } = useEditRole();
@@ -50,7 +53,7 @@ export function RoleForm({ isEdit = false, role, onClose }: RoleFormProps) {
       );
 
       toast.success("Rôle mis à jour avec succès", { position: "top-center" });
-      form.reset({
+      reset({
         name: newRole.name,
         description: newRole.description || "",
       });
@@ -62,7 +65,7 @@ export function RoleForm({ isEdit = false, role, onClose }: RoleFormProps) {
       ]);
 
       toast.success("Rôle créé avec succès", { position: "top-center" });
-      form.reset();
+      reset();
     }
     onClose?.();
   }
@@ -109,12 +112,13 @@ export function RoleForm({ isEdit = false, role, onClose }: RoleFormProps) {
         />
       </FieldGroup>
       <Field orientation="horizontal" className="justify-end mt-3">
-        <Button type="button" variant="outline" onClick={() => form.reset()}>
-          Effacer
-        </Button>
-        <LoadingButton isLoading={isLoading} type="submit" form="form-rhf-demo">
-          {isEdit ? "Modifier" : "Créer"}
-        </LoadingButton>
+        <FormActionButtons
+          isEdit={isEdit}
+          isValid={isValid}
+          isDirty={isDirty}
+          isLoading={isLoading}
+          reset={reset}
+        />
       </Field>
     </form>
   );
