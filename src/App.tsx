@@ -5,6 +5,7 @@ import CategoryPage from "./features/dashboard/features/categories/pages/Categor
 import ServicePage from "./features/dashboard/features/services/pages/ServicePage";
 import RegionPage from "./features/dashboard/features/regions/pages/RegionPage";
 import ProvincePage from "./features/dashboard/features/provinces/pages/ProvincePage";
+import CommunePage from "./features/dashboard/features/communes/pages/CommunePage";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="services" element={<ServicePage />} />
         <Route path="regions" element={<RegionPage />} />
         <Route path="provinces" element={<ProvincePage />} />
+        <Route path="communes" element={<CommunePage />} />
       </Route>
     </Routes>
   );

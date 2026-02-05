@@ -8,17 +8,17 @@ import {
 
 import { Button } from "@/shared/components/ui/button";
 import { RefreshCcw } from "lucide-react";
-import { ProvinceModal } from "../components/ProvinceModal";
-import ProvinceList from "../components/ProvinceList";
+import { CommuneModal } from "../components/communeModal";
+import CommuneList from "../components/CommuneList";
 
-export default function ProvincePage() {
+export default function CommunePage() {
   return (
     <div className="mx-auto max-w-5xl mt-10">
       <div className="bg-white rounded-lg shadow p-4">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold">Liste des Provinces</h2>
+          <h2 className="text-lg font-semibold">Liste des Communes</h2>
           <div className="flex gap-2">
-            <ProvinceModal />
+            <CommuneModal />
             <Button variant="outline">
               <RefreshCcw />
               Refresh
@@ -32,13 +32,13 @@ export default function ProvincePage() {
               <TableHead>Nom</TableHead>
               <TableHead>Longitude</TableHead>
               <TableHead>Latitude</TableHead>
-              <TableHead>Région</TableHead>
+              <TableHead>Province</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
 
           <TableBody>
-            <ProvinceList />
+            <CommuneList />
           </TableBody>
         </Table>
       </div>
