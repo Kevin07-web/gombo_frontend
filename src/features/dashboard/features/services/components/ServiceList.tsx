@@ -1,37 +1,53 @@
-import { Spinner } from "@/shared/components/ui/spinner";
 import { TableCell, TableRow } from "@/shared/components/ui/table";
 import { useServices } from "../hooks/queries/useServices";
 import { ServiceModal } from "./ServiceModal";
 import DeleteServiceButton from "./DeleteServiceButton";
-import { Button } from "@/shared/components/ui/button";
-import { Eye } from "lucide-react";
+import { TableLoading } from "@/features/dashboard/components/TableLoading";
+import { TableError } from "@/features/dashboard/components/TableError";
+import TableFetching from "@/features/dashboard/components/TableFetching";
+import { truncate } from "@/shared/utils/tuncate";
+import { StatusBadge } from "@/features/dashboard/components/StatusBadge";
+import { ServiceDetailModal } from "./ServiceDetailModal";
 
 export default function ServiceList() {
-  const { data: services, isLoading, error } = useServices();
+  const { data: services, isLoading, isFetching, error } = useServices();
 
-  if (isLoading)
+  if (isLoading) {
+    return <TableLoading />;
+  }
+  if (error) {
     return (
-      <TableRow>
-        <TableCell colSpan={4}>
-          <Spinner className="size-10 relative left-1/2 -translate-x-1/2" />
-        </TableCell>
-      </TableRow>
+      <TableError
+        description="Impossible de charger les services pour le moment."
+        buttonLabel="Réessayer"
+        onButtonClick={() => window.location.reload()}
+      />
     );
-  if (error) return <p>Erreur chargement</p>;
+  }
   return (
     <>
+      {isFetching && !isLoading && <TableFetching />}
       {services?.map((s) => (
-        <TableRow key={s.id} className="font-heading">
-          <TableCell className="font-medium">{s.id}</TableCell>
-          <TableCell>{s.libelle}</TableCell>
-          <TableCell>{s.description}</TableCell>
-          <TableCell>{s.statut || "Inconnu"}</TableCell>
-          <TableCell>{s.categorieLibelle || "Inconnu"}</TableCell>
+        <TableRow
+          key={s.id}
+          className={`transition ${isFetching && "opacity-60 pointer-events-none"}`}
+        >
+          <TableCell>
+            <span className="font-medium">#</span> {truncate(s.id)}
+          </TableCell>
+
+          <TableCell className="font-semibold">{s.libelle}</TableCell>
+
+          <TableCell className="text-muted-foreground">
+            {s.description ? truncate(s.description, 10) : ""}
+          </TableCell>
+          <TableCell>
+            <StatusBadge status={s.statut} />
+          </TableCell>
+
           <TableCell className="text-right">
-            <div className="flex justify-end gap-3">
-              <Button variant="gray">
-                <Eye size={16} />
-              </Button>
+            <div className="flex justify-end gap-2">
+              <ServiceDetailModal service={s} />
               <ServiceModal service={s} isEdit={true} />
               <DeleteServiceButton serviceId={s.id} />
             </div>

@@ -1,3 +1,4 @@
+import type { BASIC_STATUS } from "@/features/dashboard/types/Dashboard";
 import type { serviceSchemas } from "../schemas/servicesSchemas";
 import z from "zod";
 
@@ -7,9 +8,9 @@ export type Service = {
   libelle: string;
   description: string | null;
   categorieId: string;
-  statut: string | null;
-  createdAt: Date;
-  updateAt: Date;
+  statut: BASIC_STATUS;
+  createdAt: string;
+  updateAt: string;
   createdById: string;
   updateById: string;
   currentUserfullName: string;

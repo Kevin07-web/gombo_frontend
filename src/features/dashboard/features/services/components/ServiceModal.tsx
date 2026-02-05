@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Button } from "@/shared/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -9,9 +8,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/shared/components/ui/dialog";
-import { Plus, Pencil } from "lucide-react";
 import type { Service } from "../types/serviceType";
 import { ServiceForm } from "./ServiceForm";
+import { ModalDefaultTrigger } from "@/features/dashboard/components/ModalDefaultTrigger";
 
 type RoleModalProps = {
   isEdit?: boolean;
@@ -25,26 +24,14 @@ export function ServiceModal({
   trigger,
 }: RoleModalProps) {
   const [isOpen, setIsOpen] = useState(false);
-
-  // Bouton par défaut selon le type de modal
-  const defaultTrigger = isEdit ? (
-    <Button variant="secondary" size="icon">
-      <Pencil size={16} />
-    </Button>
-  ) : (
-    <Button>
-      <Plus size={16} />
-      Ajouter
-    </Button>
-  );
-
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>{trigger || defaultTrigger}</DialogTrigger>
-
+      <DialogTrigger asChild>
+        {trigger || <ModalDefaultTrigger isEdit={isEdit} />}
+      </DialogTrigger>
       <DialogContent className="sm:max-w-sm">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle className="text-2xl text-center">
             {isEdit ? "Modifier un Service" : "Créer un service"}
           </DialogTitle>
           <DialogDescription />
@@ -55,7 +42,6 @@ export function ServiceModal({
           isEdit={isEdit}
           service={service}
         />
-
         <DialogFooter />
       </DialogContent>
     </Dialog>

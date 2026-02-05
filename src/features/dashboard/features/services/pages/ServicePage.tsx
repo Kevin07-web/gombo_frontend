@@ -5,34 +5,31 @@ import {
   TableHeader,
   TableRow,
 } from "@/shared/components/ui/table";
-
-import { Button } from "@/shared/components/ui/button";
-import { RefreshCcw } from "lucide-react";
 import { ServiceModal } from "../components/ServiceModal";
 import ServiceList from "../components/ServiceList";
+import RefreshButton from "@/features/dashboard/components/RefresButton";
 
 export default function ServicePage() {
   return (
-    <div className="mx-auto max-w-5xl mt-10">
-      <div className="bg-white rounded-lg shadow p-4">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold">Liste des services</h2>
-          <div className="flex gap-2">
-            <ServiceModal />
-            <Button variant="outline">
-              <RefreshCcw />
-              Refresh
-            </Button>
-          </div>
+    <div className="mx-auto max-w-5xl mt-10 space-y-4">
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">Services</h2>
         </div>
+
+        <div className="flex flex-wrap gap-2">
+          <ServiceModal />
+          <RefreshButton queryKey={["services"]} />
+        </div>
+      </div>
+      <div className="bg-white rounded-xl shadow-sm relative">
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead className="w-15">#</TableHead>
+            <TableRow className="bg-muted/40">
+              <TableHead className="w-12">#</TableHead>
               <TableHead>libelle</TableHead>
               <TableHead>Description</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead> categorie</TableHead>
 
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>

@@ -97,27 +97,6 @@ export function CategoryForm({ isEdit = false, ctg, onClose }: RoleFormProps) {
             </Field>
           )}
         />
-        <Controller
-          name="description"
-          control={form.control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="form-rhf-demo-description">
-                Description
-              </FieldLabel>
-              <InputGroup>
-                <InputGroupTextarea
-                  {...field}
-                  id="form-rhf-demo-description"
-                  placeholder="Une petite description"
-                  rows={6}
-                  className="min-h-24 resize-none placeholder:text-gray-500"
-                  aria-invalid={fieldState.invalid}
-                />
-              </InputGroup>
-            </Field>
-          )}
-        />
 
         <Controller
           name="statut"
@@ -140,6 +119,27 @@ export function CategoryForm({ isEdit = false, ctg, onClose }: RoleFormProps) {
               </Select>
 
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+        <Controller
+          name="description"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor="form-rhf-demo-description">
+                Description
+              </FieldLabel>
+              <InputGroup>
+                <InputGroupTextarea
+                  {...field}
+                  id="form-rhf-demo-description"
+                  placeholder="Une petite description"
+                  rows={6}
+                  className="min-h-24 resize-none placeholder:text-gray-500"
+                  aria-invalid={fieldState.invalid}
+                />
+              </InputGroup>
             </Field>
           )}
         />

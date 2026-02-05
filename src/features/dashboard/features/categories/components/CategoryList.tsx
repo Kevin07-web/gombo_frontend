@@ -1,4 +1,3 @@
-import { Spinner } from "@/shared/components/ui/spinner";
 import { TableCell, TableRow } from "@/shared/components/ui/table";
 import { useCategories } from "../hooks/queries/useCategories";
 import { CategoryModal } from "./CategoryModal";
@@ -8,6 +7,7 @@ import { TableLoading } from "@/features/dashboard/components/TableLoading";
 import { TableError } from "@/features/dashboard/components/TableError";
 import { truncate } from "@/shared/utils/tuncate";
 import { StatusBadge } from "@/features/dashboard/components/StatusBadge";
+import TableFetching from "@/features/dashboard/components/TableFetching";
 
 export default function CategoryList() {
   const { data: categories, isLoading, isFetching, error } = useCategories();
@@ -27,13 +27,7 @@ export default function CategoryList() {
 
   return (
     <>
-      {isFetching && !isLoading && (
-        <TableRow className="absolute pointer-events-none inset-0 flex justify-center items-center">
-          <TableCell colSpan={4} className="py-2 text-center">
-            <Spinner className="size-12 mx-auto" />
-          </TableCell>
-        </TableRow>
-      )}
+      {isFetching && !isLoading && <TableFetching />}
       {categories?.map((ctg) => (
         <TableRow
           key={ctg.id}

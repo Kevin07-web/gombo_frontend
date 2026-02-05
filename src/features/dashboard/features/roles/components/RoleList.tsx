@@ -5,7 +5,7 @@ import { RoleModal } from "./RoleModal";
 import { TableError } from "@/features/dashboard/components/TableError";
 import { TableLoading } from "@/features/dashboard/components/TableLoading";
 import { truncate } from "@/shared/utils/tuncate";
-import { Spinner } from "@/shared/components/ui/spinner";
+import TableFetching from "@/features/dashboard/components/TableFetching";
 
 export default function RoleList() {
   const { data: roles, isLoading, isFetching, error } = useRoles();
@@ -37,13 +37,7 @@ export default function RoleList() {
   }
   return (
     <>
-      {isFetching && !isLoading && (
-        <TableRow className="absolute pointer-events-none inset-0 flex justify-center items-center">
-          <TableCell colSpan={4} className="py-2 text-center">
-            <Spinner className="size-12 mx-auto" />
-          </TableCell>
-        </TableRow>
-      )}
+      {isFetching && !isLoading && <TableFetching />}
       {roles?.map((role) => (
         <TableRow
           key={role.id}

@@ -2,7 +2,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Button } from "@/shared/components/ui/button";
 import {
   Field,
   FieldError,
@@ -47,12 +46,15 @@ export function ServiceForm({
     defaultValues: {
       libelle: isEdit && service?.libelle ? service?.libelle : "",
       description: isEdit && service?.description ? service.description : "",
-      statut: isEdit && service?.statut ? service.statut : null,
+      statut: isEdit && service?.statut ? service.statut : "INACTIF",
       categorieId: isEdit && service?.categorieId ? service.categorieId : "",
     },
   });
+  const {
+    formState: { isValid, isDirty },
+  } = form;
   const queryClient = useQueryClient();
-  const { mutateAsync, isPaused: isCreating } = useAddService();
+  const { mutateAsync, isPending: isCreating } = useAddService();
   const { mutateAsync: updateRole, isPending: isUpdating } = useEditService();
   const isLoading = isCreating || isUpdating;
   const { data: categories } = useCategories();
@@ -131,6 +133,31 @@ export function ServiceForm({
         />
 
         <Controller
+          name="statut"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel>Statut</FieldLabel>
+
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger aria-invalid={fieldState.invalid}>
+                  <SelectValue placeholder="Sélectionner une catégorie" />
+                </SelectTrigger>
+
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="ACTIF">Actif</SelectItem>
+                    <SelectItem value="INACTIF">Inactif</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
           name="description"
           control={form.control}
           render={({ field, fieldState }) => (
@@ -153,10 +180,13 @@ export function ServiceForm({
         />
       </FieldGroup>
       <Field orientation="horizontal" className="justify-end mt-3">
-        <Button type="button" variant="outline" onClick={() => form.reset()}>
-          Effacer
-        </Button>
-        <LoadingButton isLoading={isLoading} type="submit" form="form-rhf-demo">
+        <LoadingButton
+          isLoading={isLoading}
+          disabled={!isValid || !isDirty}
+          type="submit"
+          form="form-rhf-demo"
+          size="full"
+        >
           {isEdit ? "Modifier" : "Créer"}
         </LoadingButton>
       </Field>
