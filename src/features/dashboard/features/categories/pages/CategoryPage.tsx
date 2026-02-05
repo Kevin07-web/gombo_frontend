@@ -30,7 +30,7 @@ export default function CategoryPage() {
           <TableHeader>
             <TableRow className="bg-muted/40">
               <TableHead className="w-12">#</TableHead>
-              <TableHead>Nom</TableHead>
+              <TableHead>Libellé</TableHead>
               <TableHead>Description</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-right">Actions</TableHead>

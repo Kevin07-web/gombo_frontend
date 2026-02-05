@@ -27,7 +27,7 @@ export default function ServicePage() {
           <TableHeader>
             <TableRow className="bg-muted/40">
               <TableHead className="w-12">#</TableHead>
-              <TableHead>libelle</TableHead>
+              <TableHead>Libellé</TableHead>
               <TableHead>Description</TableHead>
               <TableHead>Status</TableHead>
 

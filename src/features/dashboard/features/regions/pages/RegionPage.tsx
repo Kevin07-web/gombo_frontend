@@ -6,30 +6,30 @@ import {
   TableRow,
 } from "@/shared/components/ui/table";
 
-import { Button } from "@/shared/components/ui/button";
-import { RefreshCcw } from "lucide-react";
 import { RegionModal } from "../components/RegionModal";
 import RegionList from "../components/RegionList";
+import RefreshButton from "@/features/dashboard/components/RefresButton";
 
 export default function RegionPage() {
   return (
-    <div className="mx-auto max-w-5xl mt-10">
-      <div className="bg-white rounded-lg shadow p-4">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold">Liste des regions</h2>
-          <div className="flex gap-2">
-            <RegionModal />
-            <Button variant="outline">
-              <RefreshCcw />
-              Refresh
-            </Button>
-          </div>
+    <div className="mx-auto max-w-5xl mt-10 space-y-4">
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">Régions</h2>
         </div>
+
+        <div className="flex flex-wrap gap-2">
+          <RegionModal />
+          <RefreshButton queryKey={["regions"]} />
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl shadow-sm relative">
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead className="w-15">#</TableHead>
-              <TableHead>Nom</TableHead>
+            <TableRow className="bg-muted/40">
+              <TableHead className="w-12">#</TableHead>
+              <TableHead>Libellé</TableHead>
               <TableHead>Longitude</TableHead>
               <TableHead>Latitude</TableHead>
               <TableHead className="text-right">Actions</TableHead>

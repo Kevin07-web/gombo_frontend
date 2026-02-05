@@ -2,7 +2,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Button } from "@/shared/components/ui/button";
 import {
   Field,
   FieldError,
@@ -32,12 +31,15 @@ export function RegionForm({
     resolver: zodResolver(regionSchemas),
     defaultValues: {
       libelle: region?.libelle ?? "",
-      longitude: region?.longitude?.toString() ?? "",
-      latitude: region?.latitude?.toString() ?? "",
+      longitude: region?.longitude?.toString() ?? "0",
+      latitude: region?.latitude?.toString() ?? "0",
     },
   });
+  const {
+    formState: { isValid, isDirty },
+  } = form;
   const queryClient = useQueryClient();
-  const { mutateAsync, isPaused: isCreating } = useAddRegion();
+  const { mutateAsync, isPending: isCreating } = useAddRegion();
   const { mutateAsync: updateRole, isPending: isUpdating } = useEditRegion();
   const isLoading = isCreating || isUpdating;
 
@@ -118,10 +120,13 @@ export function RegionForm({
         />
       </FieldGroup>
       <Field orientation="horizontal" className="justify-end mt-3">
-        <Button type="button" variant="outline" onClick={() => form.reset()}>
-          Effacer
-        </Button>
-        <LoadingButton isLoading={isLoading} type="submit" form="form-rhf-demo">
+        <LoadingButton
+          isLoading={isLoading}
+          disabled={!isValid || !isDirty}
+          type="submit"
+          form="form-rhf-demo"
+          size="full"
+        >
           {isEdit ? "Modifier" : "Créer"}
         </LoadingButton>
       </Field>

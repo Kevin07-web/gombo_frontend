@@ -1,37 +1,48 @@
-import { Spinner } from "@/shared/components/ui/spinner";
 import { TableCell, TableRow } from "@/shared/components/ui/table";
 import { useRegions } from "../hooks/queries/useRegions";
 import { RegionModal } from "./RegionModal";
 import DeleteRegionButton from "./DeleteRegionButton";
-import { Button } from "@/shared/components/ui/button";
-import { Eye } from "lucide-react";
+import { TableLoading } from "@/features/dashboard/components/TableLoading";
+import { TableError } from "@/features/dashboard/components/TableError";
+import TableFetching from "@/features/dashboard/components/TableFetching";
+import { truncate } from "@/shared/utils/tuncate";
+import { RegionDetailModal } from "./RegionDetailModal";
 
 export default function RegionList() {
-  const { data: regions, isLoading, error } = useRegions();
+  const { data: regions, isLoading, isFetching, error } = useRegions();
 
-  if (isLoading)
+  if (isLoading) {
+    return <TableLoading />;
+  }
+  if (error) {
     return (
-      <TableRow>
-        <TableCell colSpan={4}>
-          <Spinner className="size-10 relative left-1/2 -translate-x-1/2" />
-        </TableCell>
-      </TableRow>
+      <TableError
+        description="Impossible de charger les régions pour le moment."
+        buttonLabel="Réessayer"
+        onButtonClick={() => window.location.reload()}
+      />
     );
-  if (error) return <p>Erreur chargement</p>;
+  }
 
   return (
     <>
+      {isFetching && !isLoading && <TableFetching />}
       {regions?.map((r) => (
-        <TableRow key={r.id} className="font-heading">
-          <TableCell className="font-medium">{r.id}</TableCell>
-          <TableCell>{r.libelle}</TableCell>
-          <TableCell>{r.longitude || "Inconnu"}</TableCell>
-          <TableCell>{r.latitude || "Inconnu"}</TableCell>
+        <TableRow
+          key={r.id}
+          className={`transition ${isFetching && "opacity-60 pointer-events-none"}`}
+        >
+          <TableCell>
+            <span className="font-medium">#</span> {truncate(r.id)}
+          </TableCell>
+
+          <TableCell className="font-semibold">{r.libelle}</TableCell>
+          <TableCell className="font-semibold">{r.longitude}</TableCell>
+          <TableCell className="font-semibold">{r.latitude}</TableCell>
+
           <TableCell className="text-right">
-            <div className="flex justify-end gap-3">
-              <Button variant="gray">
-                <Eye size={16} />
-              </Button>
+            <div className="flex justify-end gap-2">
+              <RegionDetailModal region={r} />
               <RegionModal region={r} isEdit={true} />
               <DeleteRegionButton regionId={r.id} />
             </div>
