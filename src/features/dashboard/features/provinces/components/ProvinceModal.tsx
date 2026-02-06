@@ -11,6 +11,8 @@ import {
 import type { Province } from "../types/ProvinceType";
 import { ProvinceForm } from "./ProvinceForm";
 import { ModalDefaultTrigger } from "@/features/dashboard/components/ModalDefaultTrigger";
+import { useProvince } from "../hooks/queries/useProvince";
+import { Spinner } from "@/shared/components/ui/spinner";
 
 type ProvinceModalProps = {
   isEdit?: boolean;
@@ -20,10 +22,14 @@ type ProvinceModalProps = {
 
 export function ProvinceModal({
   isEdit = false,
-  province,
+  province: p,
   trigger,
 }: ProvinceModalProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const { data: province, isLoading } = useProvince({
+    provinceId: p?.id || "",
+    enabled: isOpen && isEdit,
+  });
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -37,11 +43,19 @@ export function ProvinceModal({
           </DialogTitle>
           <DialogDescription />
         </DialogHeader>
-        <ProvinceForm
-          isEdit={isEdit}
-          province={province}
-          onClose={() => setIsOpen(false)}
-        />
+        {isEdit ? (
+          isLoading ? (
+            <Spinner />
+          ) : (
+            <ProvinceForm
+              isEdit={isEdit}
+              province={province}
+              onClose={() => setIsOpen(false)}
+            />
+          )
+        ) : (
+          <ProvinceForm onClose={() => setIsOpen(false)} />
+        )}
         <DialogFooter />
       </DialogContent>
     </Dialog>

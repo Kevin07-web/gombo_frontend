@@ -22,7 +22,7 @@ export default function ServicePage() {
           <RefreshButton queryKey={["services"]} />
         </div>
       </div>
-      <div className="bg-white rounded-xl shadow-sm relative">
+      <div className="bg-white rounded-lg shadow p-4">
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/40">

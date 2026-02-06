@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import type { Province } from "../../types/ProvinceType";
 import { ProvinceAPI } from "../../api/ProvinceService";
 
-export function useRegion({
+export function useProvince({
   provinceId,
   enabled,
 }: {

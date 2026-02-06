@@ -39,8 +39,10 @@ export default function EditRoleForm({ role, onClose }: EditRoleFormProps) {
   const queryClient = useQueryClient();
   const { mutateAsync: updateRole, isPending: isUpdating } = useEditRole();
   const isLoading = isUpdating;
+  console.log(role?.name);
   const onEdit = async (data: EditRoleFormValues) => {
     if (!role) return;
+    console.log(data);
 
     try {
       await updateRole({

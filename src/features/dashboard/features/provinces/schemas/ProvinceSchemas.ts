@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const provinceSchemas = z.object({
-  regionId: z.string(),
+  regionId: z.string().nonempty(),
   libelle: z.string().min(2, "Le libellé est requis").toLowerCase(),
   longitude: z
     .string()

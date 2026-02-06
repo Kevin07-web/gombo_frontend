@@ -14,7 +14,6 @@ export const ProvinceAPI = {
     const res = await api.post("/provinces", data);
     return res.data;
   },
-  update: (provinceId: string, data: Province) =>
-    api.put(`/provinces/${provinceId}`, data),
+  update: (data: Province) => api.put(`/provinces`, data),
   delete: (provinceId: string) => api.delete(`/provinces/${provinceId}`),
 };

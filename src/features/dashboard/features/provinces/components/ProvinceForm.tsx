@@ -40,8 +40,8 @@ export function ProvinceForm({
     resolver: zodResolver(provinceSchemas),
     defaultValues: {
       libelle: province?.libelle ?? "",
-      longitude: province?.longitude?.toString() ?? "",
-      latitude: province?.latitude?.toString() ?? "",
+      longitude: province?.longitude?.toString() ?? "0",
+      latitude: province?.latitude?.toString() ?? "0",
       regionId: province?.regionId ?? "",
     },
   });
@@ -67,7 +67,7 @@ export function ProvinceForm({
         oldProvinces?.map((r) => (r.id === newProvince.id ? newProvince : r)),
       );
 
-      toast.success("Region mis à jour avec succès", {
+      toast.success("Modification Enregistré", {
         position: "top-center",
       });
     } else {
@@ -77,7 +77,7 @@ export function ProvinceForm({
         newProvince,
       ]);
 
-      toast.success("Region créé avec succès", { position: "top-center" });
+      toast.success("Province créé avec succès", { position: "top-center" });
       form.reset();
     }
     onClose?.();
