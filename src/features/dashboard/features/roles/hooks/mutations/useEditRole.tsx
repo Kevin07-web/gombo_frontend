@@ -1,10 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
 import { RolesAPI } from "../../api/roleService";
-import type { Role } from "../../types/roleTypes";
+import type { EditRoleFormValues } from "../../types/roleTypes";
 
 export function useEditRole() {
   return useMutation({
-    mutationFn: (data: Role) => RolesAPI.update(data),
+    mutationFn: (data: EditRoleFormValues) => RolesAPI.update(data),
     retry: 0,
     onSuccess: () => {
       console.log("success");

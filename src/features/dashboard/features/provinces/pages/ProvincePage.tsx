@@ -6,33 +6,31 @@ import {
   TableRow,
 } from "@/shared/components/ui/table";
 
-import { Button } from "@/shared/components/ui/button";
-import { RefreshCcw } from "lucide-react";
 import { ProvinceModal } from "../components/ProvinceModal";
 import ProvinceList from "../components/ProvinceList";
+import RefreshButton from "@/features/dashboard/components/RefresButton";
 
 export default function ProvincePage() {
   return (
-    <div className="mx-auto max-w-5xl mt-10">
-      <div className="bg-white rounded-lg shadow p-4">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold">Liste des Provinces</h2>
-          <div className="flex gap-2">
-            <ProvinceModal />
-            <Button variant="outline">
-              <RefreshCcw />
-              Refresh
-            </Button>
-          </div>
+    <div className="mx-auto max-w-5xl mt-10 space-y-4">
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">Provinces</h2>
         </div>
+
+        <div className="flex flex-wrap gap-2">
+          <ProvinceModal />
+          <RefreshButton queryKey={["provinces"]} />
+        </div>
+      </div>
+      <div className="bg-white rounded-lg shadow p-4">
         <Table>
           <TableHeader>
-            <TableRow>
+            <TableRow className="bg-muted/40">
               <TableHead className="w-15">#</TableHead>
               <TableHead>Nom</TableHead>
               <TableHead>Longitude</TableHead>
               <TableHead>Latitude</TableHead>
-              <TableHead>Région</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>

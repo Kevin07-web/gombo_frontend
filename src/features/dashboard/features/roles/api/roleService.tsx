@@ -1,5 +1,9 @@
 import { api } from "@/shared/api/api";
-import type { Role, RoleFormValues } from "../types/roleTypes";
+import type {
+  EditRoleFormValues,
+  Role,
+  RoleFormValues,
+} from "../types/roleTypes";
 
 export const RolesAPI = {
   getAll: async (): Promise<Role[]> => {
@@ -10,6 +14,6 @@ export const RolesAPI = {
     const res = await api.post("/roles", data);
     return res.data;
   },
-  update: (data: Role) => api.put("/roles/update", data),
+  update: (data: EditRoleFormValues) => api.put("/roles/update", data),
   delete: (roleName: string) => api.delete(`/roles/${roleName}`),
 };

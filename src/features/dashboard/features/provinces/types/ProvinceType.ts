@@ -6,8 +6,8 @@ export type Province = {
   id: string;
   libelle: string;
   statut: string | null;
-  createdAt: Date;
-  updateAt: Date;
+  createdAt: string;
+  updateAt: string;
   createdById: string;
   updateById: string;
   currentUserfullName: string;

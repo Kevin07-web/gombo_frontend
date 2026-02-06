@@ -13,8 +13,12 @@ import {
   InputGroup,
   InputGroupTextarea,
 } from "@/shared/components/ui/input-group";
-import { roleSchemas } from "../schemas/roleSchemas";
-import type { RoleFormValues, Role } from "../types/roleTypes";
+import { editRoleSchemas, roleSchemas } from "../schemas/roleSchemas";
+import type {
+  RoleFormValues,
+  Role,
+  EditRoleFormValues,
+} from "../types/roleTypes";
 import { useAddRole } from "../hooks/mutations/useAddRole";
 import { useEditRole } from "../hooks/mutations/useEditRole";
 import { useQueryClient } from "@tanstack/react-query";
@@ -27,12 +31,22 @@ type RoleFormProps = {
 };
 
 export function RoleForm({ isEdit = false, role, onClose }: RoleFormProps) {
-  const form = useForm<RoleFormValues>({
-    resolver: zodResolver(roleSchemas),
-    defaultValues: {
-      name: isEdit && role?.name ? role.name : "",
-      description: isEdit && role?.description ? role.description : "",
-    },
+  const defaultValues = isEdit
+    ? {
+        oldName: role?.name ? role.name : "",
+        newName: "",
+        description: role?.description ? role.description : "",
+      }
+    : {
+        name: "",
+        description: "",
+      };
+  type FormValues = RoleFormValues | EditRoleFormValues;
+  const schemas = isEdit ? editRoleSchemas : roleSchemas;
+
+  const form = useForm({
+    resolver: zodResolver(schemas),
+    defaultValues,
   });
   const {
     reset,
@@ -42,53 +56,88 @@ export function RoleForm({ isEdit = false, role, onClose }: RoleFormProps) {
   const { mutateAsync, isPending: isCreating } = useAddRole();
   const { mutateAsync: updateRole, isPending: isUpdating } = useEditRole();
   const isLoading = isCreating || isUpdating;
-  async function onSubmit(data: RoleFormValues) {
-    let newRole: Role;
 
-    if (isEdit && role) {
-      newRole = { ...role, ...data };
-      await updateRole(newRole);
-      queryClient.setQueryData<Role[]>(["roles"], (oldRoles) =>
-        oldRoles?.map((r) => (r.id === newRole.id ? newRole : r)),
-      );
+  const onCreate = async (data: RoleFormValues) => {
+    const newRole: Role = await mutateAsync(data);
+    queryClient.setQueryData<Role[]>(["roles"], (oldRoles) => [
+      ...(oldRoles || []),
+      newRole,
+    ]);
 
-      toast.success("Rôle mis à jour avec succès", { position: "top-center" });
-      reset({
-        name: newRole.name,
-        description: newRole.description || "",
-      });
-    } else {
-      newRole = await mutateAsync(data);
-      queryClient.setQueryData<Role[]>(["roles"], (oldRoles) => [
-        ...(oldRoles || []),
-        newRole,
-      ]);
-
-      toast.success("Rôle créé avec succès", { position: "top-center" });
-      reset();
-    }
+    toast.success("Rôle créé avec succès", { position: "top-center" });
+    reset();
     onClose?.();
-  }
+  };
+  const onEdit = async (data: EditRoleFormValues) => {
+    if (!role) return;
+    const newRole: EditRoleFormValues = {
+      ...role,
+      newName: data.newName,
+      oldName: data.oldName,
+      description: data.description,
+    };
+    await updateRole(newRole);
+    queryClient.setQueryData<Role[]>(["roles"], (oldRoles) =>
+      oldRoles?.map((r) =>
+        r.id === role.id ? { ...role, name: newRole.newName } : r,
+      ),
+    );
+
+    toast.success("Rôle mis à jour avec succès", { position: "top-center" });
+    reset({
+      name: newRole.name,
+      description: newRole.description || "",
+    });
+    onClose?.();
+  };
 
   return (
-    <form id="form-rhf-demo" onSubmit={form.handleSubmit(onSubmit)}>
+    <form
+      id="form-rhf-demo"
+      onSubmit={form.handleSubmit(isEdit ? onEdit : onCreate)}
+    >
       <FieldGroup>
         <Controller
-          name="name"
+          name={isEdit ? "oldName" : "name"}
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="form-rhf-demo-title">Nom</FieldLabel>
+              <FieldLabel htmlFor="form-rhf-demo-title">
+                {isEdit ? "Nom actuel" : "Nom"}
+              </FieldLabel>
               <Input
                 {...field}
                 id="form-rhf-demo-title"
                 aria-invalid={fieldState.invalid}
                 autoComplete="off"
+                disabled={isEdit}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
+        {isEdit && (
+          <Controller
+            name="newName"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor="form-rhf-demo-title">
+                  Nouveau Nom
+                </FieldLabel>
+                <Input
+                  {...field}
+                  id="form-rhf-demo-title"
+                  aria-invalid={fieldState.invalid}
+                  autoComplete="off"
+                />
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </Field>
+            )}
+          />
+        )}
         <Controller
           name="description"
           control={form.control}

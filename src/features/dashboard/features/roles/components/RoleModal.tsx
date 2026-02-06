@@ -8,9 +8,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/shared/components/ui/dialog";
-import { RoleForm } from "./RoleForm";
 import type { Role } from "../types/roleTypes";
 import { ModalDefaultTrigger } from "@/features/dashboard/components/ModalDefaultTrigger";
+import { AddRoleForm } from "./AddRoleForm";
+import EditRoleForm from "./EditRoleForm";
 
 type RoleModalProps = {
   isEdit?: boolean;
@@ -34,13 +35,12 @@ export function RoleModal({ isEdit = false, role, trigger }: RoleModalProps) {
           <DialogDescription />
         </DialogHeader>
         <div className="px-3">
-          <RoleForm
-            onClose={() => setIsOpen(false)}
-            isEdit={isEdit}
-            role={role}
-          />
+          {isEdit ? (
+            <EditRoleForm onClose={() => setIsOpen(false)} role={role} />
+          ) : (
+            <AddRoleForm onClose={() => setIsOpen(false)} />
+          )}
         </div>
-
         <DialogFooter />
       </DialogContent>
     </Dialog>

@@ -24,6 +24,18 @@ export default function ServiceList() {
       />
     );
   }
+  if (!services?.length) {
+    return (
+      <TableRow>
+        <TableCell
+          colSpan={4}
+          className="text-center py-6 text-muted-foreground"
+        >
+          Aucune service disponible
+        </TableCell>
+      </TableRow>
+    );
+  }
   return (
     <>
       {isFetching && !isLoading && <TableFetching />}

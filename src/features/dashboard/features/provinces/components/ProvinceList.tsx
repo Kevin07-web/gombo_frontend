@@ -1,34 +1,57 @@
-import { Spinner } from "@/shared/components/ui/spinner";
 import { TableCell, TableRow } from "@/shared/components/ui/table";
-
 import { Button } from "@/shared/components/ui/button";
 import { Eye } from "lucide-react";
 import { useProvinces } from "../hooks/queries/useProvinces";
 import { ProvinceModal } from "./ProvinceModal";
 import DeleteProvinceButton from "./DeleteProvinceButton";
+import { TableLoading } from "@/features/dashboard/components/TableLoading";
+import { TableError } from "@/features/dashboard/components/TableError";
+import TableFetching from "@/features/dashboard/components/TableFetching";
+import { truncate } from "@/shared/utils/tuncate";
 
 export default function ProvinceList() {
-  const { data: provinces, isLoading, error } = useProvinces();
+  const { data: provinces, isLoading, isFetching, error } = useProvinces();
 
-  if (isLoading)
+  if (isLoading) {
+    return <TableLoading />;
+  }
+  if (error) {
+    return (
+      <TableError
+        description="Impossible de charger les provinces pour le moment."
+        buttonLabel="Réessayer"
+        onButtonClick={() => window.location.reload()}
+      />
+    );
+  }
+  if (!provinces?.length) {
     return (
       <TableRow>
-        <TableCell colSpan={4}>
-          <Spinner className="size-10 relative left-1/2 -translate-x-1/2" />
+        <TableCell
+          colSpan={4}
+          className="text-center py-6 text-muted-foreground"
+        >
+          Aucune province disponible
         </TableCell>
       </TableRow>
     );
-  if (error) return <p>Erreur chargement</p>;
+  }
 
   return (
     <>
+      {isFetching && !isLoading && <TableFetching />}
       {provinces?.map((p) => (
-        <TableRow key={p.id} className="font-heading">
-          <TableCell className="font-medium">{p.id}</TableCell>
-          <TableCell>{p.libelle}</TableCell>
-          <TableCell>{p.longitude || "Inconnu"}</TableCell>
-          <TableCell>{p.latitude || "Inconnu"}</TableCell>
-          <TableCell>{p.regionLibelle || "Inconnu"}</TableCell>
+        <TableRow
+          key={p.id}
+          className={`transition ${isFetching && "opacity-60 pointer-events-none"}`}
+        >
+          <TableCell className="font-medium">
+            {" "}
+            <span className="font-medium">#</span> {truncate(p.id)}
+          </TableCell>
+          <TableCell className="font-semibold">{p.libelle}</TableCell>
+          <TableCell>{p.longitude}</TableCell>
+          <TableCell>{p.latitude}</TableCell>
           <TableCell className="text-right">
             <div className="flex justify-end gap-3">
               <Button variant="gray">

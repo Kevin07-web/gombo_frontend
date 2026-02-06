@@ -23,6 +23,18 @@ export default function RegionList() {
       />
     );
   }
+  if (!regions?.length) {
+    return (
+      <TableRow>
+        <TableCell
+          colSpan={4}
+          className="text-center py-6 text-muted-foreground"
+        >
+          Aucune région disponible
+        </TableCell>
+      </TableRow>
+    );
+  }
 
   return (
     <>
@@ -37,8 +49,8 @@ export default function RegionList() {
           </TableCell>
 
           <TableCell className="font-semibold">{r.libelle}</TableCell>
-          <TableCell className="font-semibold">{r.longitude}</TableCell>
-          <TableCell className="font-semibold">{r.latitude}</TableCell>
+          <TableCell>{r.longitude}</TableCell>
+          <TableCell>{r.latitude}</TableCell>
 
           <TableCell className="text-right">
             <div className="flex justify-end gap-2">

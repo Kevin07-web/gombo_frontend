@@ -2,7 +2,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Button } from "@/shared/components/ui/button";
 import {
   Field,
   FieldError,
@@ -46,8 +45,11 @@ export function ProvinceForm({
       regionId: province?.regionId ?? "",
     },
   });
+  const {
+    formState: { isValid, isDirty },
+  } = form;
   const queryClient = useQueryClient();
-  const { mutateAsync, isPaused: isCreating } = useAddProvince();
+  const { mutateAsync, isPending: isCreating } = useAddProvince();
   const { mutateAsync: updateProvince, isPending: isUpdating } =
     useEditProvince();
   const isLoading = isCreating || isUpdating;
@@ -160,10 +162,13 @@ export function ProvinceForm({
         />
       </FieldGroup>
       <Field orientation="horizontal" className="justify-end mt-3">
-        <Button type="button" variant="outline" onClick={() => form.reset()}>
-          Effacer
-        </Button>
-        <LoadingButton isLoading={isLoading} type="submit" form="form-rhf-demo">
+        <LoadingButton
+          isLoading={isLoading}
+          disabled={!isValid || !isDirty}
+          type="submit"
+          form="form-rhf-demo"
+          size="full"
+        >
           {isEdit ? "Modifier" : "Créer"}
         </LoadingButton>
       </Field>

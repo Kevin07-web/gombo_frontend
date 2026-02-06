@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Button } from "@/shared/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -9,9 +8,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/shared/components/ui/dialog";
-import { Plus, Pencil } from "lucide-react";
 import type { Province } from "../types/ProvinceType";
 import { ProvinceForm } from "./ProvinceForm";
+import { ModalDefaultTrigger } from "@/features/dashboard/components/ModalDefaultTrigger";
 
 type ProvinceModalProps = {
   isEdit?: boolean;
@@ -26,25 +25,14 @@ export function ProvinceModal({
 }: ProvinceModalProps) {
   const [isOpen, setIsOpen] = useState(false);
 
-  // Bouton par défaut selon le type de modal
-  const defaultTrigger = isEdit ? (
-    <Button variant="secondary" size="icon">
-      <Pencil size={16} />
-    </Button>
-  ) : (
-    <Button>
-      <Plus size={16} />
-      Ajouter
-    </Button>
-  );
-
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>{trigger || defaultTrigger}</DialogTrigger>
-
+      <DialogTrigger asChild>
+        {trigger || <ModalDefaultTrigger isEdit={isEdit} />}
+      </DialogTrigger>
       <DialogContent className="sm:max-w-sm">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle className="text-2xl text-center">
             {isEdit ? "Modifier une province" : "Créer une province"}
           </DialogTitle>
           <DialogDescription />
