@@ -26,18 +26,20 @@ type RoleFormProps = {
 export function AddRoleForm({ onClose }: RoleFormProps) {
   const form = useForm<RoleFormValues>({
     resolver: zodResolver(roleSchemas),
+    mode: "onTouched",
     defaultValues: {
       name: "",
       description: "",
     },
   });
+
   const {
     reset,
     formState: { isValid },
   } = form;
+
   const queryClient = useQueryClient();
   const { mutateAsync, isPending: isCreating } = useAddRole();
-  const isLoading = isCreating;
 
   const onCreate = async (data: RoleFormValues) => {
     const newRole: Role = await mutateAsync(data);
@@ -52,19 +54,23 @@ export function AddRoleForm({ onClose }: RoleFormProps) {
   };
 
   return (
-    <form id="form-rhf-demo" onSubmit={form.handleSubmit(onCreate)}>
-      <FieldGroup>
+    <form
+      id="form-add-role"
+      onSubmit={form.handleSubmit(onCreate)}
+      className="space-y-6"
+    >
+      <FieldGroup className="space-y-4">
         <Controller
           name="name"
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="form-rhf-demo-title">Nom</FieldLabel>
+              <FieldLabel>Nom du rôle</FieldLabel>
               <Input
                 {...field}
-                id="form-rhf-demo-title"
-                aria-invalid={fieldState.invalid}
+                placeholder="Ex: Administrateur"
                 autoComplete="off"
+                className="h-11"
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -76,34 +82,32 @@ export function AddRoleForm({ onClose }: RoleFormProps) {
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="form-rhf-demo-description">
-                Description
-              </FieldLabel>
+              <FieldLabel>Description</FieldLabel>
               <InputGroup>
                 <InputGroupTextarea
                   {...field}
-                  id="form-rhf-demo-description"
-                  placeholder="Une petite description"
-                  rows={6}
-                  className="min-h-24 resize-none placeholder:text-gray-500"
-                  aria-invalid={fieldState.invalid}
+                  rows={5}
+                  className="resize-none placeholder:text-muted-foreground"
                 />
               </InputGroup>
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
       </FieldGroup>
-      <Field orientation="horizontal" className="justify-end mt-3">
+
+      {/* Footer actions */}
+      <div className="flex justify-end pt-2">
         <LoadingButton
-          isLoading={isLoading}
+          isLoading={isCreating}
           disabled={!isValid}
           type="submit"
-          form="form-rhf-demo"
-          size="full"
+          size="lg"
+          className="gap-2"
         >
           Créer
         </LoadingButton>
-      </Field>
+      </div>
     </form>
   );
 }

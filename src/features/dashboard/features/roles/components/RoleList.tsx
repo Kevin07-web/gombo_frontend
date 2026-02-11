@@ -55,7 +55,7 @@ export default function RoleList() {
 
           <TableCell className="text-right">
             <div className="flex justify-end gap-2">
-              <RoleModal role={role} isEdit={true} />
+              <RoleModal roleName={role.name} isEdit={true} />
               <DeleteRoleButton roleName={role.name} />
             </div>
           </TableCell>

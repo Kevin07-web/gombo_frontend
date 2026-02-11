@@ -10,6 +10,10 @@ export const RolesAPI = {
     const res = await api.get("/roles");
     return res.data;
   },
+  getOne: async (roleName: string): Promise<Role> => {
+    const res = await api.get(`/roles/${roleName}`);
+    return res.data;
+  },
   create: async (data: RoleFormValues): Promise<Role> => {
     const res = await api.post("/roles", data);
     return res.data;
